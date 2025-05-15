@@ -4,14 +4,17 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 const ContactSection = () => {
   const { toast } = useToast();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
+    subject: "",
     message: "",
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -21,23 +24,47 @@ const ContactSection = () => {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Here you'd typically send the form data to your backend
-    console.log("Form submitted:", formData);
+    setIsSubmitting(true);
     
-    // Show success message
-    toast({
-      title: "Message sent!",
-      description: "Thanks for reaching out. I'll get back to you soon.",
-    });
-    
-    // Reset form
-    setFormData({
-      name: "",
-      email: "",
-      message: "",
-    });
+    try {
+      // Save message to Supabase
+      const { error } = await supabase
+        .from("contact_messages")
+        .insert([{
+          name: formData.name,
+          email: formData.email,
+          subject: formData.subject || "Contact Form Submission",
+          message: formData.message,
+          read: false
+        }]);
+      
+      if (error) throw error;
+      
+      // Show success message
+      toast({
+        title: "Message sent!",
+        description: "Thanks for reaching out. I'll get back to you soon.",
+      });
+      
+      // Reset form
+      setFormData({
+        name: "",
+        email: "",
+        subject: "",
+        message: "",
+      });
+    } catch (error) {
+      console.error("Error sending message:", error);
+      toast({
+        title: "Error sending message",
+        description: "There was a problem sending your message. Please try again later.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -60,6 +87,7 @@ const ContactSection = () => {
               onChange={handleChange}
               required
               className="bg-tech-lightBlue border-tech-lightBlue/50 text-tech-white"
+              disabled={isSubmitting}
             />
           </div>
           <div>
@@ -71,6 +99,18 @@ const ContactSection = () => {
               onChange={handleChange}
               required
               className="bg-tech-lightBlue border-tech-lightBlue/50 text-tech-white"
+              disabled={isSubmitting}
+            />
+          </div>
+          <div>
+            <Input
+              type="text"
+              name="subject"
+              placeholder="Subject (Optional)"
+              value={formData.subject}
+              onChange={handleChange}
+              className="bg-tech-lightBlue border-tech-lightBlue/50 text-tech-white"
+              disabled={isSubmitting}
             />
           </div>
           <div>
@@ -81,14 +121,16 @@ const ContactSection = () => {
               onChange={handleChange}
               required
               className="bg-tech-lightBlue border-tech-lightBlue/50 text-tech-white min-h-[150px]"
+              disabled={isSubmitting}
             />
           </div>
           <div className="text-center">
             <Button 
               type="submit"
               className="bg-transparent hover:bg-tech-highlight/10 text-tech-highlight border border-tech-highlight px-8"
+              disabled={isSubmitting}
             >
-              Send Message
+              {isSubmitting ? "Sending..." : "Send Message"}
             </Button>
           </div>
         </form>

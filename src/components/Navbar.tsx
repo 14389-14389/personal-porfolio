@@ -1,95 +1,104 @@
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { cn } from '@/lib/utils';
-
-const navLinks = [
-  { name: "About", href: "#about" },
-  { name: "Experience", href: "#experience" },
-  { name: "Projects", href: "#projects" },
-  { name: "Contact", href: "#contact" },
-];
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
+      const offset = window.scrollY;
+      setScrolled(offset > 50);
     };
-    window.addEventListener('scroll', handleScroll);
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const navItems = [
+    { name: "About", href: "#about" },
+    { name: "Projects", href: "#projects" },
+    { name: "Experience", href: "#experience" },
+    { name: "Contact", href: "#contact" },
+  ];
+
   return (
-    <header 
-      className={cn(
-        "fixed top-0 w-full z-50 transition-all duration-300 px-4 md:px-8",
-        scrolled ? "bg-tech-blue/90 backdrop-blur shadow-md py-2" : "bg-transparent py-5"
-      )}
+    <header
+      className={`fixed top-0 w-full z-50 transition-all duration-300 ${
+        scrolled ? "bg-tech-blue shadow-md py-3" : "bg-transparent py-5"
+      }`}
     >
-      <div className="container mx-auto flex items-center justify-between">
-        <a href="#" className="text-tech-highlight font-bold text-2xl">John.Dev</a>
-        
-        {/* Desktop Navigation */}
-        <nav className="hidden md:flex">
-          <ul className="flex space-x-8">
-            {navLinks.map((link, index) => (
-              <li key={link.name}>
-                <a 
-                  href={link.href}
-                  className="text-tech-slate hover:text-tech-highlight transition-colors duration-300 relative group"
+      <div className="container mx-auto px-4 flex justify-between items-center">
+        <Link to="/" className="text-tech-highlight font-bold text-xl">
+          Portfolio
+        </Link>
+
+        {/* Mobile Menu */}
+        <div className="md:hidden">
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button variant="ghost" size="icon" className="text-tech-white">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                 >
-                  <span className="text-tech-highlight mr-1">0{index + 1}.</span>
-                  {link.name}
-                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-tech-highlight group-hover:w-full transition-all duration-300"></span>
-                </a>
-              </li>
-            ))}
-          </ul>
-        </nav>
-        
-        <Button 
-          variant="outline"
-          className="hidden md:block border border-tech-highlight text-tech-highlight hover:bg-tech-highlight/10"
-        >
-          Resume
-        </Button>
+                  <line x1="4" x2="20" y1="12" y2="12" />
+                  <line x1="4" x2="20" y1="6" y2="6" />
+                  <line x1="4" x2="20" y1="18" y2="18" />
+                </svg>
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="right" className="bg-tech-lightBlue border-tech-lightBlue/30 w-[300px]">
+              <nav className="flex flex-col gap-6 mt-12">
+                {navItems.map((item) => (
+                  <a
+                    key={item.name}
+                    href={item.href}
+                    className="text-tech-slate hover:text-tech-highlight transition-colors text-lg"
+                  >
+                    {item.name}
+                  </a>
+                ))}
+                <Link
+                  to="/auth"
+                  className="text-tech-highlight hover:text-tech-highlight/80 transition-colors text-lg"
+                >
+                  Admin
+                </Link>
+              </nav>
+            </SheetContent>
+          </Sheet>
+        </div>
 
-        {/* Mobile Menu Button */}
-        <button 
-          className="md:hidden text-tech-white"
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="w-6 h-6">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={mobileMenuOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"} />
-          </svg>
-        </button>
-      </div>
-
-      {/* Mobile Menu */}
-      <div className={`md:hidden ${mobileMenuOpen ? 'block' : 'hidden'}`}>
-        <div className="px-2 pt-2 pb-3 space-y-1 bg-tech-lightBlue mt-2 rounded-md">
-          {navLinks.map((link) => (
+        {/* Desktop Menu */}
+        <nav className="hidden md:flex items-center space-x-8">
+          {navItems.map((item, i) => (
             <a
-              key={link.name}
-              href={link.href}
-              className="text-tech-slate hover:text-tech-highlight block px-3 py-2"
-              onClick={() => setMobileMenuOpen(false)}
+              key={item.name}
+              href={item.href}
+              className="text-tech-slate hover:text-tech-highlight transition-colors"
             >
-              {link.name}
+              <span className="text-tech-highlight font-mono text-xs mr-1">{`0${i + 1}.`}</span> {item.name}
             </a>
           ))}
-          <Button 
+          <Button
             variant="outline"
-            className="w-full border border-tech-highlight text-tech-highlight hover:bg-tech-highlight/10 mt-4"
+            className="border-tech-highlight text-tech-highlight hover:bg-tech-highlight/10"
+            onClick={() => navigate("/auth")}
           >
-            Resume
+            Admin
           </Button>
-        </div>
+        </nav>
       </div>
     </header>
   );
