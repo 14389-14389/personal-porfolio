@@ -9,6 +9,101 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      addresses: {
+        Row: {
+          address_line1: string
+          address_line2: string | null
+          address_type: Database["public"]["Enums"]["address_type_enum"]
+          city: string
+          country: string
+          created_at: string
+          customer_id: string
+          id: string
+          is_default: boolean | null
+          postal_code: string
+          state_province: string
+          updated_at: string
+        }
+        Insert: {
+          address_line1: string
+          address_line2?: string | null
+          address_type: Database["public"]["Enums"]["address_type_enum"]
+          city: string
+          country: string
+          created_at?: string
+          customer_id: string
+          id?: string
+          is_default?: boolean | null
+          postal_code: string
+          state_province: string
+          updated_at?: string
+        }
+        Update: {
+          address_line1?: string
+          address_line2?: string | null
+          address_type?: Database["public"]["Enums"]["address_type_enum"]
+          city?: string
+          country?: string
+          created_at?: string
+          customer_id?: string
+          id?: string
+          is_default?: boolean | null
+          postal_code?: string
+          state_province?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "addresses_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      admin_notifications: {
+        Row: {
+          created_at: string
+          id: string
+          is_read: boolean | null
+          message: string
+          notification_type: string
+          related_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_read?: boolean | null
+          message: string
+          notification_type: string
+          related_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_read?: boolean | null
+          message?: string
+          notification_type?: string
+          related_id?: string | null
+        }
+        Relationships: []
+      }
+      admin_roles: {
+        Row: {
+          created_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       blog_posts: {
         Row: {
           content: string
@@ -47,6 +142,44 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      categories: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          name: string
+          parent_category_id: string | null
+          slug: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          name: string
+          parent_category_id?: string | null
+          slug: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          name?: string
+          parent_category_id?: string | null
+          slug?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "categories_parent_category_id_fkey"
+            columns: ["parent_category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       certifications: {
         Row: {
@@ -108,6 +241,36 @@ export type Database = {
           name?: string
           read?: boolean | null
           subject?: string
+        }
+        Relationships: []
+      }
+      customers: {
+        Row: {
+          created_at: string
+          email: string | null
+          first_name: string | null
+          id: string
+          last_name: string | null
+          phone_number: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          first_name?: string | null
+          id: string
+          last_name?: string | null
+          phone_number?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          first_name?: string | null
+          id?: string
+          last_name?: string | null
+          phone_number?: string | null
+          updated_at?: string
         }
         Relationships: []
       }
@@ -186,50 +349,205 @@ export type Database = {
         }
         Relationships: []
       }
-      profile: {
+      order_items: {
         Row: {
-          bio: string
           created_at: string
-          email: string | null
-          full_name: string
-          github_url: string | null
           id: string
-          linkedin_url: string | null
-          profile_image_url: string | null
-          resume_url: string | null
-          title: string
-          twitter_url: string | null
+          order_id: string
+          price_at_purchase: number
+          product_id: string
+          quantity: number
           updated_at: string
         }
         Insert: {
-          bio: string
           created_at?: string
-          email?: string | null
-          full_name: string
-          github_url?: string | null
           id?: string
-          linkedin_url?: string | null
-          profile_image_url?: string | null
-          resume_url?: string | null
-          title: string
-          twitter_url?: string | null
+          order_id: string
+          price_at_purchase: number
+          product_id: string
+          quantity: number
           updated_at?: string
         }
         Update: {
-          bio?: string
           created_at?: string
-          email?: string | null
-          full_name?: string
-          github_url?: string | null
           id?: string
-          linkedin_url?: string | null
-          profile_image_url?: string | null
-          resume_url?: string | null
-          title?: string
-          twitter_url?: string | null
+          order_id?: string
+          price_at_purchase?: number
+          product_id?: string
+          quantity?: number
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "order_items_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "order_items_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      orders: {
+        Row: {
+          billing_address_id: string | null
+          created_at: string
+          customer_id: string
+          id: string
+          notes: string | null
+          order_date: string
+          shipping_address_id: string
+          status: Database["public"]["Enums"]["order_status_enum"]
+          total_amount: number
+          updated_at: string
+        }
+        Insert: {
+          billing_address_id?: string | null
+          created_at?: string
+          customer_id: string
+          id?: string
+          notes?: string | null
+          order_date?: string
+          shipping_address_id: string
+          status?: Database["public"]["Enums"]["order_status_enum"]
+          total_amount: number
+          updated_at?: string
+        }
+        Update: {
+          billing_address_id?: string | null
+          created_at?: string
+          customer_id?: string
+          id?: string
+          notes?: string | null
+          order_date?: string
+          shipping_address_id?: string
+          status?: Database["public"]["Enums"]["order_status_enum"]
+          total_amount?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "orders_billing_address_id_fkey"
+            columns: ["billing_address_id"]
+            isOneToOne: false
+            referencedRelation: "addresses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "orders_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "orders_shipping_address_id_fkey"
+            columns: ["shipping_address_id"]
+            isOneToOne: false
+            referencedRelation: "addresses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      payments: {
+        Row: {
+          amount: number
+          created_at: string
+          id: string
+          order_id: string
+          payment_details: Json | null
+          payment_method: Database["public"]["Enums"]["payment_method_enum"]
+          status: string
+          transaction_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          id?: string
+          order_id: string
+          payment_details?: Json | null
+          payment_method: Database["public"]["Enums"]["payment_method_enum"]
+          status?: string
+          transaction_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          id?: string
+          order_id?: string
+          payment_details?: Json | null
+          payment_method?: Database["public"]["Enums"]["payment_method_enum"]
+          status?: string
+          transaction_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payments_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      products: {
+        Row: {
+          category_id: string | null
+          created_at: string
+          description: string | null
+          id: string
+          image_urls: string[] | null
+          is_active: boolean | null
+          name: string
+          price: number
+          sku: string | null
+          stock_quantity: number
+          updated_at: string
+        }
+        Insert: {
+          category_id?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_urls?: string[] | null
+          is_active?: boolean | null
+          name: string
+          price: number
+          sku?: string | null
+          stock_quantity?: number
+          updated_at?: string
+        }
+        Update: {
+          category_id?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_urls?: string[] | null
+          is_active?: boolean | null
+          name?: string
+          price?: number
+          sku?: string | null
+          stock_quantity?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "products_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       projects: {
         Row: {
@@ -368,7 +686,21 @@ export type Database = {
       }
     }
     Enums: {
-      [_ in never]: never
+      address_type_enum: "shipping" | "billing"
+      order_status_enum:
+        | "pending_payment"
+        | "processing"
+        | "shipped"
+        | "delivered"
+        | "cancelled"
+        | "refunded"
+      payment_method_enum:
+        | "paypal"
+        | "cash_app"
+        | "binance"
+        | "till_number"
+        | "credit_card"
+        | "other"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -483,6 +815,24 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      address_type_enum: ["shipping", "billing"],
+      order_status_enum: [
+        "pending_payment",
+        "processing",
+        "shipped",
+        "delivered",
+        "cancelled",
+        "refunded",
+      ],
+      payment_method_enum: [
+        "paypal",
+        "cash_app",
+        "binance",
+        "till_number",
+        "credit_card",
+        "other",
+      ],
+    },
   },
 } as const
