@@ -28,7 +28,7 @@ const AboutSection = () => {
         <div className="grid md:grid-cols-3 gap-10">
           <div className="md:col-span-2 text-tech-slate">
             <p className="mb-4">
-              Hello! I'm John, a passionate software developer with a knack for creating intuitive and 
+              Hello! I'm Kevin, a passionate software developer with a knack for creating intuitive and 
               efficient digital solutions. My journey in tech began during university when I built my first 
               web application, and I've been hooked ever since.
             </p>
@@ -64,7 +64,7 @@ const AboutSection = () => {
               <div className="absolute inset-0 bg-tech-highlight/20 group-hover:bg-transparent transition-all duration-300"></div>
               <img 
                 src="https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d" 
-                alt="John Doe" 
+                alt="Kevin Muli" 
                 className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-300"
               />
             </div>

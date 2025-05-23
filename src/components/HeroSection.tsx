@@ -17,7 +17,7 @@ const HeroSection = () => {
           style={{ animationFillMode: 'forwards' }}
         >
           <h1 className="text-5xl md:text-7xl font-bold text-tech-white mb-4">
-            John Doe.
+            Kevin Muli.
           </h1>
         </div>
         
