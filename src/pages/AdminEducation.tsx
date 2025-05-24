@@ -161,9 +161,14 @@ const AdminEducation = () => {
     
     try {
       const educationData = {
-        ...values,
+        institution: values.institution,
+        degree: values.degree,
+        field_of_study: values.field_of_study || null,
+        start_date: values.start_date || null,
+        end_date: values.is_current ? null : (values.end_date || null),
+        is_current: values.is_current,
+        description: values.description || null,
         user_id: user.id,
-        end_date: values.is_current ? null : values.end_date
       };
 
       let error;

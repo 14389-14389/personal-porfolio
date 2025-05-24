@@ -48,9 +48,7 @@ const experienceSchema = z.object({
   end_date: z.string().optional(),
   is_current: z.boolean().default(false),
   description: z.string().optional(),
-  technologies: z.string().optional().transform(val => 
-    val ? val.split(',').map(tech => tech.trim()) : []
-  )
+  technologies: z.string().optional()
 });
 
 type ExperienceFormValues = z.infer<typeof experienceSchema>;
@@ -168,10 +166,20 @@ const AdminExperience = () => {
     setIsSubmitting(true);
     
     try {
+      const technologiesArray = values.technologies 
+        ? values.technologies.split(',').map(tech => tech.trim()) 
+        : [];
+
       const experienceData = {
-        ...values,
+        company: values.company,
+        position: values.position,
+        location: values.location || null,
+        start_date: values.start_date,
+        end_date: values.is_current ? null : (values.end_date || null),
+        is_current: values.is_current,
+        description: values.description || null,
+        technologies: technologiesArray,
         user_id: user.id,
-        end_date: values.is_current ? null : values.end_date,
       };
 
       let error;

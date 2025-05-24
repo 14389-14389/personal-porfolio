@@ -141,7 +141,9 @@ const AdminSkills = () => {
     
     try {
       const skillData = {
-        ...values,
+        name: values.name,
+        category: values.category,
+        proficiency_level: values.proficiency_level,
         user_id: user.id,
       };
 
